@@ -5,12 +5,47 @@ class Siswa_model extends CI_Model {
 
     protected $table = 'siswa';
 
-    public function get_all() {
-        return $this->db->select('s.*, k.nama_kelas')
+    public function get_all($filters = [], $limit = null, $offset = null) {
+        $this->db->select('s.*, k.nama_kelas')
             ->from('siswa s')
-            ->join('kelas k', 'k.id = s.kelas_id', 'left')
-            ->order_by('s.nama', 'ASC')
-            ->get()->result();
+            ->join('kelas k', 'k.id = s.kelas_id', 'left');
+
+        if (!empty($filters['search'])) {
+            $s = $filters['search'];
+            $this->db->group_start()
+                ->like('s.nis', $s)->or_like('s.nama', $s)
+                ->or_like('s.alamat', $s)->or_like('s.no_hp', $s)
+                ->group_end();
+        }
+        if (!empty($filters['kelas_id'])) {
+            $this->db->where('s.kelas_id', $filters['kelas_id']);
+        }
+        if (!empty($filters['jenis_kelamin'])) {
+            $this->db->where('s.jenis_kelamin', $filters['jenis_kelamin']);
+        }
+
+        $this->db->order_by('s.nama', 'ASC');
+        if ($limit) $this->db->limit($limit, $offset);
+        return $this->db->get()->result();
+    }
+
+    public function count_all($filters = []) {
+        $this->db->from('siswa s')->join('kelas k', 'k.id = s.kelas_id', 'left');
+
+        if (!empty($filters['search'])) {
+            $s = $filters['search'];
+            $this->db->group_start()
+                ->like('s.nis', $s)->or_like('s.nama', $s)
+                ->or_like('s.alamat', $s)->or_like('s.no_hp', $s)
+                ->group_end();
+        }
+        if (!empty($filters['kelas_id'])) {
+            $this->db->where('s.kelas_id', $filters['kelas_id']);
+        }
+        if (!empty($filters['jenis_kelamin'])) {
+            $this->db->where('s.jenis_kelamin', $filters['jenis_kelamin']);
+        }
+        return $this->db->count_all_results();
     }
 
     public function get_by_id($id) {

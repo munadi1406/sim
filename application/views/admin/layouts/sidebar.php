@@ -23,7 +23,7 @@ $uri = $this->uri->segment(2); // controller name
     </li>
 
     <hr class="sidebar-divider">
-    <div class="sidebar-heading">Akademik</div>
+    <div class="sidebar-heading">Data Master</div>
 
     <!-- Siswa -->
     <li class="nav-item <?= ($uri == 'siswa') ? 'active' : '' ?>">
@@ -57,6 +57,9 @@ $uri = $this->uri->segment(2); // controller name
         </a>
     </li>
 
+    <hr class="sidebar-divider">
+    <div class="sidebar-heading">Akademik</div>
+
     <!-- Nilai -->
     <li class="nav-item <?= ($uri == 'nilai') ? 'active' : '' ?>">
         <a class="nav-link" href="<?= base_url('admin/nilai') ?>">
@@ -81,6 +84,17 @@ $uri = $this->uri->segment(2); // controller name
         <a class="nav-link" href="<?= base_url('admin/pengumuman') ?>">
             <i class="fas fa-fw fa-bullhorn"></i>
             <span>Pengumuman</span>
+        </a>
+    </li>
+
+    <hr class="sidebar-divider">
+    <div class="sidebar-heading">Laporan</div>
+
+    <!-- Laporan -->
+    <li class="nav-item <?= ($uri == 'report') ? 'active' : '' ?>">
+        <a class="nav-link" href="<?= base_url('admin/report') ?>">
+            <i class="fas fa-fw fa-file-pdf"></i>
+            <span>Cetak Laporan</span>
         </a>
     </li>
 

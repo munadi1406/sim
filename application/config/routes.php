@@ -15,4 +15,6 @@ $route['setup'] = 'setup/index';
 
 // Admin routes
 $route['admin'] = 'admin/dashboard/index';
+$route['admin/report'] = 'admin/report/index';
+$route['admin/report/(:any)'] = 'admin/report/$1';
 $route['admin/(:any)'] = 'admin/$1';

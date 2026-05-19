@@ -5,17 +5,58 @@ class Nilai_model extends CI_Model {
 
     protected $table = 'nilai';
 
-    public function get_all($kelas_id = null) {
-        $this->db->select('n.*, s.nama as nama_siswa, s.nis, k.nama_kelas, m.nama as nama_mapel')
+    public function get_all($filters = [], $limit = null, $offset = null) {
+        $this->db->select('n.*, s.nama as nama_siswa, s.nis, k.nama_kelas, k.tingkat, m.nama as nama_mapel')
             ->from('nilai n')
             ->join('siswa s', 's.id = n.siswa_id')
             ->join('kelas k', 'k.id = s.kelas_id', 'left')
-            ->join('mata_pelajaran m', 'm.id = n.mapel_id')
-            ->order_by('s.nama', 'ASC');
-        if ($kelas_id) {
-            $this->db->where('s.kelas_id', $kelas_id);
+            ->join('mata_pelajaran m', 'm.id = n.mapel_id');
+
+        if (!empty($filters['search'])) {
+            $s = $filters['search'];
+            $this->db->group_start()
+                ->like('s.nis', $s)->or_like('s.nama', $s)
+                ->or_like('m.nama', $s)->or_like('k.nama_kelas', $s)
+                ->group_end();
         }
+        if (!empty($filters['kelas_id'])) {
+            $this->db->where('s.kelas_id', $filters['kelas_id']);
+        }
+        if (!empty($filters['semester'])) {
+            $this->db->where('n.semester', $filters['semester']);
+        }
+        if (!empty($filters['tahun_ajaran'])) {
+            $this->db->where('n.tahun_ajaran', $filters['tahun_ajaran']);
+        }
+
+        $this->db->order_by('s.nama', 'ASC')->order_by('m.nama', 'ASC');
+        if ($limit) $this->db->limit($limit, $offset);
         return $this->db->get()->result();
+    }
+
+    public function count_all($filters = []) {
+        $this->db->from('nilai n')
+            ->join('siswa s', 's.id = n.siswa_id')
+            ->join('kelas k', 'k.id = s.kelas_id', 'left')
+            ->join('mata_pelajaran m', 'm.id = n.mapel_id');
+
+        if (!empty($filters['search'])) {
+            $s = $filters['search'];
+            $this->db->group_start()
+                ->like('s.nis', $s)->or_like('s.nama', $s)
+                ->or_like('m.nama', $s)->or_like('k.nama_kelas', $s)
+                ->group_end();
+        }
+        if (!empty($filters['kelas_id'])) {
+            $this->db->where('s.kelas_id', $filters['kelas_id']);
+        }
+        if (!empty($filters['semester'])) {
+            $this->db->where('n.semester', $filters['semester']);
+        }
+        if (!empty($filters['tahun_ajaran'])) {
+            $this->db->where('n.tahun_ajaran', $filters['tahun_ajaran']);
+        }
+        return $this->db->count_all_results();
     }
 
     public function get_by_id($id) {
