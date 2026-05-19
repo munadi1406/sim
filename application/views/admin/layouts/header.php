@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Sistem Informasi Manajemen Sekolah">
-    <title><?= isset($title) ? $title . ' - ' : '' ?>SIMS | SMA Negeri 1 Contoh</title>
+    <meta name="description" content="Sistem Informasi Manajemen Sekolah - <?= esc($web->nama_sekolah ?? 'SIMS') ?>">
+    <title><?= isset($title) ? $title . ' - ' : '' ?><?= esc($web->nama_sekolah ?? 'SIMS') ?></title>
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">

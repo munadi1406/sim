@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Admin - SIMS SMA Negeri 1 Contoh</title>
+    <title>Login Admin - <?= esc($web->nama_sekolah ?? 'SIMS') ?></title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -145,7 +145,7 @@
         <!-- Left Panel -->
         <div class="login-left">
             <div class="school-logo"><i class="fas fa-school"></i></div>
-            <h2>SMA Negeri 1 Contoh</h2>
+            <h2><?= esc($web->nama_sekolah ?? 'SIMS') ?></h2>
             <p>Sistem Informasi Manajemen Sekolah<br>Terpadu dan Terintegrasi</p>
             <div class="stats">
                 <div class="stat">

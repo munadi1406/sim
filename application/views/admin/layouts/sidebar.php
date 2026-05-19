@@ -9,7 +9,7 @@ $uri = $this->uri->segment(2); // controller name
         <div class="sidebar-brand-icon">
             <i class="fas fa-school fa-lg"></i>
         </div>
-        <div class="sidebar-brand-text mx-2">SIMS <sup style="font-size:9px;">v1.0</sup></div>
+        <div class="sidebar-brand-text mx-2"><?= esc($web->nama_sekolah ?? 'SIMS') ?></div>
     </a>
 
     <hr class="sidebar-divider my-0">

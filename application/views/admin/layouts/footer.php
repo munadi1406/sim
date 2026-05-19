@@ -8,7 +8,7 @@
 <footer class="sticky-footer bg-white">
     <div class="container my-auto">
         <div class="copyright text-center my-auto">
-            <span>Copyright &copy; SIMS SMA Negeri 1 Contoh <?= date('Y') ?> | Sistem Informasi Manajemen Sekolah</span>
+            <span>Copyright &copy; <?= esc($web->nama_sekolah ?? 'SIMS') ?> <?= date('Y') ?> | Sistem Informasi Manajemen Sekolah</span>
         </div>
     </div>
 </footer>
