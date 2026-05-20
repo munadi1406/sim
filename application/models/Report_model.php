@@ -315,4 +315,22 @@ class Report_model extends CI_Model {
             ->order_by('semester', 'DESC')
             ->get()->result();
     }
+
+    public function rekap_spp($bulan = null, $tahun = null) {
+        $this->db->select('
+                j.nama as jenis_nama,
+                COUNT(t.id) as total_tagihan,
+                SUM(CASE WHEN t.status = "lunas" THEN 1 ELSE 0 END) as total_lunas,
+                SUM(CASE WHEN t.status = "belum" THEN 1 ELSE 0 END) as total_belum,
+                SUM(t.nominal) as total_nominal,
+                SUM(CASE WHEN t.status = "lunas" THEN t.nominal ELSE 0 END) as total_terbayar
+            ')
+            ->from('tagihan t')
+            ->join('jenis_pembayaran j', 'j.id = t.jenis_id')
+            ->group_by('t.jenis_id')
+            ->order_by('j.nama', 'ASC');
+        if ($bulan) $this->db->where('t.bulan', $bulan);
+        if ($tahun) $this->db->where('t.tahun', $tahun);
+        return $this->db->get()->result();
+    }
 }

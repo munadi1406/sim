@@ -201,4 +201,24 @@ class Report extends Admin_Controller {
         $html = $this->load->view('admin/report/pdf_beban_mengajar', $data, true);
         $this->_generate_pdf($html, 'Beban_Mengajar_Guru');
     }
+
+    // ===================================================================
+    //  9. Laporan Pembayaran SPP
+    // ===================================================================
+    public function laporan_spp() {
+        $bulan  = $this->input->get('bulan');
+        $tahun  = $this->input->get('tahun');
+
+        $data = $this->_get_kop_data();
+        $data['title']    = 'Laporan Pembayaran SPP';
+        $data['subtitle'] = ($bulan && $tahun) ? date('F', mktime(0,0,0,$bulan,1)) . ' ' . $tahun : null;
+        $data['rekap']    = $this->Report_model->rekap_spp($bulan, $tahun);
+        $data['bulan']    = $bulan;
+        $data['tahun']    = $tahun;
+
+        $filename = 'Laporan_SPP';
+        if ($bulan && $tahun) $filename .= '_' . date('F', mktime(0,0,0,$bulan,1)) . '_' . $tahun;
+        $html = $this->load->view('admin/report/pdf_spp', $data, true);
+        $this->_generate_pdf($html, $filename);
+    }
 }
