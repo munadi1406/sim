@@ -98,6 +98,17 @@ $uri = $this->uri->segment(2); // controller name
         </a>
     </li>
 
+    <hr class="sidebar-divider">
+    <div class="sidebar-heading">Pembayaran</div>
+
+    <!-- Pembayaran -->
+    <li class="nav-item <?= ($uri == 'pembayaran') ? 'active' : '' ?>">
+        <a class="nav-link" href="<?= base_url('admin/pembayaran') ?>">
+            <i class="fas fa-fw fa-money-bill-wave"></i>
+            <span>Pembayaran SPP</span>
+        </a>
+    </li>
+
     <!-- Manajemen User -->
     <?php if ($this->session->userdata('role') == 'admin'): ?>
     <li class="nav-item <?= ($uri == 'users') ? 'active' : '' ?>">
