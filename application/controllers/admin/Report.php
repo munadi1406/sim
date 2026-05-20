@@ -13,6 +13,7 @@ class Report extends Admin_Controller {
         $data['title']         = 'Laporan';
         $data['kelas']         = $this->Kelas_model->get_all();
         $data['semester_list'] = $this->Report_model->get_distinct_semester_tahun();
+        $data['tahun_spp']     = $this->Report_model->get_tahun_spp();
 
         $this->load->view('admin/layouts/header', $data);
         $this->load->view('admin/layouts/sidebar', $data);
@@ -206,19 +207,48 @@ class Report extends Admin_Controller {
     //  9. Laporan Pembayaran SPP
     // ===================================================================
     public function laporan_spp() {
-        $bulan  = $this->input->get('bulan');
-        $tahun  = $this->input->get('tahun');
+        $bulan    = $this->input->get('bulan');
+        $tahun    = $this->input->get('tahun');
+        $kelas_id = $this->input->get('kelas_id');
 
         $data = $this->_get_kop_data();
         $data['title']    = 'Laporan Pembayaran SPP';
         $data['subtitle'] = ($bulan && $tahun) ? date('F', mktime(0,0,0,$bulan,1)) . ' ' . $tahun : null;
-        $data['rekap']    = $this->Report_model->rekap_spp($bulan, $tahun);
+        $data['rekap']    = $this->Report_model->rekap_spp($bulan, $tahun, $kelas_id);
         $data['bulan']    = $bulan;
         $data['tahun']    = $tahun;
 
         $filename = 'Laporan_SPP';
         if ($bulan && $tahun) $filename .= '_' . date('F', mktime(0,0,0,$bulan,1)) . '_' . $tahun;
         $html = $this->load->view('admin/report/pdf_spp', $data, true);
+        $this->_generate_pdf($html, $filename);
+    }
+
+    // ===================================================================
+    //  10. Detail Pembayaran per Siswa
+    // ===================================================================
+    public function detail_spp() {
+        $bulan    = $this->input->get('bulan');
+        $tahun    = $this->input->get('tahun');
+        $kelas_id = $this->input->get('kelas_id');
+
+        if (!$kelas_id) {
+            $this->session->set_flashdata('error', 'Silakan pilih kelas terlebih dahulu.');
+            redirect('admin/report');
+            return;
+        }
+
+        $kelas = $this->Kelas_model->get_by_id($kelas_id);
+        if (!$kelas) show_404();
+
+        $data = $this->_get_kop_data();
+        $data['title']    = 'Laporan Detail Pembayaran per Siswa';
+        $data['subtitle'] = 'Kelas: ' . $kelas->nama_kelas . ' (Tingkat ' . $kelas->tingkat . ')';
+        if ($bulan && $tahun) $data['subtitle'] .= ' | ' . date('F', mktime(0,0,0,$bulan,1)) . ' ' . $tahun;
+        $data['rows']     = $this->Report_model->detail_spp_siswa($bulan, $tahun, $kelas_id);
+
+        $filename = 'Detail_SPP_' . str_replace(' ', '_', $kelas->nama_kelas);
+        $html = $this->load->view('admin/report/pdf_detail_spp', $data, true);
         $this->_generate_pdf($html, $filename);
     }
 }

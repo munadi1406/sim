@@ -316,7 +316,7 @@ class Report_model extends CI_Model {
             ->get()->result();
     }
 
-    public function rekap_spp($bulan = null, $tahun = null) {
+    public function rekap_spp($bulan = null, $tahun = null, $kelas_id = null) {
         $this->db->select('
                 j.nama as jenis_nama,
                 COUNT(t.id) as total_tagihan,
@@ -327,10 +327,37 @@ class Report_model extends CI_Model {
             ')
             ->from('tagihan t')
             ->join('jenis_pembayaran j', 'j.id = t.jenis_id')
+            ->join('siswa s', 's.id = t.siswa_id')
             ->group_by('t.jenis_id')
             ->order_by('j.nama', 'ASC');
         if ($bulan) $this->db->where('t.bulan', $bulan);
         if ($tahun) $this->db->where('t.tahun', $tahun);
+        if ($kelas_id) $this->db->where('s.kelas_id', $kelas_id);
+        return $this->db->get()->result();
+    }
+
+    public function get_tahun_spp() {
+        return $this->db->select('tahun')->from('tagihan')->group_by('tahun')->order_by('tahun','DESC')->get()->result();
+    }
+
+    public function detail_spp_siswa($bulan = null, $tahun = null, $kelas_id = null) {
+        $this->db->select('
+                s.id as siswa_id, s.nis, s.nama as nama_siswa,
+                k.nama_kelas, k.tingkat,
+                SUM(CASE WHEN t.status = "lunas" THEN 1 ELSE 0 END) as jml_lunas,
+                SUM(CASE WHEN t.status = "belum" THEN 1 ELSE 0 END) as jml_belum,
+                COUNT(t.id) as total_tagihan
+            ')
+            ->from('siswa s')
+            ->join('kelas k', 'k.id = s.kelas_id', 'left')
+            ->join('tagihan t', 't.siswa_id = s.id', 'left')
+            ->group_by('s.id')
+            ->order_by('k.tingkat', 'ASC')
+            ->order_by('k.nama_kelas', 'ASC')
+            ->order_by('s.nama', 'ASC');
+        if ($bulan) $this->db->where('t.bulan', $bulan);
+        if ($tahun) $this->db->where('t.tahun', $tahun);
+        if ($kelas_id) $this->db->where('s.kelas_id', $kelas_id);
         return $this->db->get()->result();
     }
 }

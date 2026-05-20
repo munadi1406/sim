@@ -172,17 +172,34 @@
     </div>
 
     <div class="col-xl-6 col-md-6 mb-4">
-        <div class="card border-left-success shadow h-100 py-2">
+        <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body">
-                <div class="h5 font-weight-bold text-success mb-2">9. Laporan Pembayaran SPP</div>
-                <div class="text-muted small mb-3">Rekap pembayaran per jenis: total tagihan, lunas, nominal terbayar, sisa tunggakan.</div>
-                <form action="<?= base_url('admin/report/laporan_spp') ?>" method="get" target="_blank" class="form-inline">
-                    <select name="bulan" class="form-control form-control-sm mr-1">
-                        <option value="">Semua Bulan</option>
-                        <?php for($i=1;$i<=12;$i++): ?><option value="<?= $i ?>"><?= date('M',mktime(0,0,0,$i,1)) ?></option><?php endfor; ?>
-                    </select>
-                    <input type="number" name="tahun" class="form-control form-control-sm mr-2" placeholder="Tahun" style="width:80px;">
-                    <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-download fa-sm"></i> PDF</button>
+                <div class="h5 font-weight-bold text-primary mb-2">9. Laporan Pembayaran SPP</div>
+                <div class="text-muted small mb-3">Rekap per jenis: total tagihan, lunas, nominal terbayar, sisa tunggakan.</div>
+                <form action="<?= base_url('admin/report/laporan_spp') ?>" method="get" target="_blank">
+                    <div class="form-row">
+                        <div class="col"><select name="bulan" class="form-control form-control-sm"><option value="">Semua Bulan</option><?php for($i=1;$i<=12;$i++): ?><option value="<?= $i ?>"><?= date('M',mktime(0,0,0,$i,1)) ?></option><?php endfor; ?></select></div>
+                        <div class="col"><select name="tahun" class="form-control form-control-sm"><option value="">Semua Tahun</option><?php foreach ($tahun_spp as $t): ?><option value="<?= $t->tahun ?>"><?= $t->tahun ?></option><?php endforeach; ?></select></div>
+                        <div class="col"><select name="kelas_id" class="form-control form-control-sm"><option value="">Semua Kelas</option><?php foreach ($kelas as $k): ?><option value="<?= $k->id ?>"><?= esc($k->nama_kelas) ?></option><?php endforeach; ?></select></div>
+                        <div class="col-auto"><button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-download fa-sm"></i> PDF</button></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-6 col-md-6 mb-4">
+        <div class="card border-left-dark shadow h-100 py-2">
+            <div class="card-body">
+                <div class="h5 font-weight-bold text-dark mb-2">10. Detail Pembayaran per Siswa</div>
+                <div class="text-muted small mb-3">Daftar siswa per kelas dengan status lunas/belum. Cocok untuk rekap wali kelas.</div>
+                <form action="<?= base_url('admin/report/detail_spp') ?>" method="get" target="_blank">
+                    <div class="form-row">
+                        <div class="col"><select name="kelas_id" class="form-control form-control-sm" required><option value="">-- Pilih Kelas --</option><?php foreach ($kelas as $k): ?><option value="<?= $k->id ?>"><?= esc($k->nama_kelas) ?></option><?php endforeach; ?></select></div>
+                        <div class="col"><select name="bulan" class="form-control form-control-sm"><option value="">Semua Bulan</option><?php for($i=1;$i<=12;$i++): ?><option value="<?= $i ?>"><?= date('M',mktime(0,0,0,$i,1)) ?></option><?php endfor; ?></select></div>
+                        <div class="col"><select name="tahun" class="form-control form-control-sm"><option value="">Semua Tahun</option><?php foreach ($tahun_spp as $t): ?><option value="<?= $t->tahun ?>"><?= $t->tahun ?></option><?php endforeach; ?></select></div>
+                        <div class="col-auto"><button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-download fa-sm"></i> PDF</button></div>
+                    </div>
                 </form>
             </div>
         </div>
