@@ -11,7 +11,8 @@ class Pembayaran extends Admin_Controller {
 
     // ─── DASHBOARD ───────────────────────────────────────────────────────
     public function index() {
-        $bulan = date('m'); $tahun = date('Y');
+        $bulan = $this->input->get('bulan');
+        $tahun = $this->input->get('tahun');
         $data['title']  = 'Dashboard Pembayaran';
         $data['rekap']  = $this->Tagihan_model->get_rekap($bulan, $tahun);
         $data['bulan']  = $bulan;
@@ -179,6 +180,7 @@ class Pembayaran extends Admin_Controller {
         }
 
         $count = 0;
+        $payment_ids = [];
         foreach ($tagihan_ids as $tid) {
             $tagihan = $this->Tagihan_model->get_by_id($tid);
             if ($tagihan && $tagihan->status == 'belum') {
@@ -190,12 +192,42 @@ class Pembayaran extends Admin_Controller {
                     'petugas_id'    => $this->session->userdata('user_id'),
                     'keterangan'    => $keterangan,
                 ]);
+                $payment_ids[] = $this->db->insert_id();
                 $this->Tagihan_model->lunasi($tid);
                 $count++;
             }
         }
+        if ($count > 0) {
+            redirect('admin/pembayaran/invoice/' . implode('-', $payment_ids));
+        }
         $this->session->set_flashdata('success', "$count tagihan berhasil dibayar!");
         redirect('admin/pembayaran/bayar?kelas_id='.$this->input->post('kelas_id'));
+    }
+
+    // ─── INVOICE ───────────────────────────────────────────────────────────
+    public function invoice($ids = null) {
+        if (!$ids) show_404();
+        $id_list = explode('-', $ids);
+        $data['list'] = [];
+        foreach ($id_list as $pid) {
+            $p = $this->db->select('p.*, t.bulan, t.tahun, t.nominal as tagihan_nominal, s.nama as nama_siswa, s.nis, k.nama_kelas, k.tingkat, j.nama as jenis_nama, u.nama as petugas_nama')
+                ->from('pembayaran p')
+                ->join('tagihan t', 't.id = p.tagihan_id')
+                ->join('siswa s', 's.id = t.siswa_id')
+                ->join('kelas k', 'k.id = s.kelas_id', 'left')
+                ->join('jenis_pembayaran j', 'j.id = t.jenis_id')
+                ->join('users u', 'u.id = p.petugas_id', 'left')
+                ->where('p.id', $pid)->get()->row();
+            if ($p) $data['list'][] = $p;
+        }
+        if (empty($data['list'])) show_404();
+
+        $data['web']       = $this->Pengaturan_model->get_web_settings();
+        $data['no_invoice']= 'INV-' . date('Ymd') . '-' . str_pad($id_list[0], 4, '0', STR_PAD_LEFT);
+        $data['tanggal']   = $data['list'][0]->tanggal_bayar;
+        $data['total']     = array_sum(array_column($data['list'], 'jumlah_bayar'));
+
+        $this->load->view('admin/pembayaran/invoice', $data);
     }
 
     // ─── RIWAYAT PEMBAYARAN ───────────────────────────────────────────────
