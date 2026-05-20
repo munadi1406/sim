@@ -1,3 +1,5 @@
+<?php include __DIR__ . '/_nav.php'; ?>
+
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800"><i class="fas fa-list-ul mr-2 text-info"></i>Daftar Tagihan</h1>
     <a href="<?= base_url('admin/pembayaran/generate') ?>" class="btn btn-warning shadow-sm"><i class="fas fa-sync fa-sm mr-1"></i> Generate</a>
