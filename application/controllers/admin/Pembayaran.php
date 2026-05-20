@@ -5,6 +5,10 @@ class Pembayaran extends Admin_Controller {
 
     public function __construct() {
         parent::__construct();
+        if ($this->session->userdata('role') !== 'admin') {
+            $this->session->set_flashdata('error', 'Akses ditolak! Hanya admin yang dapat mengakses pembayaran.');
+            redirect('admin/dashboard');
+        }
         $this->load->model(['Jenis_model', 'Tagihan_model', 'Pembayaran_model']);
         $this->load->library('pagination');
     }
