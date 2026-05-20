@@ -34,12 +34,11 @@
     <div class="card-header py-3 d-flex justify-content-between"><h6 class="m-0 font-weight-bold text-secondary">Riwayat</h6><small><?= $this->pagination->total_rows ?? 0 ?> data</small></div>
     <div class="card-body p-0">
         <table class="table table-bordered mb-0">
-            <thead class="thead-light"><tr><th width="40">#</th><th>invoice</th><th>Tanggal</th><th>Siswa</th><th>Kelas</th><th>Jenis</th><th>Periode</th><th class="text-right">Jumlah</th><th>Metode</th><th>Petugas</th></tr></thead>
+            <thead class="thead-light"><tr><th width="40">#</th><th>Tanggal</th><th>Siswa</th><th>Kelas</th><th>Jenis</th><th>Periode</th><th class="text-right">Jumlah</th><th>Metode</th><th>Petugas</th><th width="50">Invoice</th></tr></thead>
             <tbody>
                 <?php $no = $this->uri->segment(4) + 1; foreach ($riwayat as $r): ?>
                 <tr>
                     <td class="text-center"><?= $no++ ?></td>
-                    <td class="text-center"><a href="<?= base_url('admin/pembayaran/invoice/'.$r->id) ?>" class="btn btn-outline-primary btn-sm" target="_blank" title="Cetak Invoice"><i class="fas fa-print"></i></a></td>
                     <td><?= date('d/m/Y', strtotime($r->tanggal_bayar)) ?></td>
                     <td><?= esc($r->nama_siswa) ?><br><small class="text-muted"><?= esc($r->nis) ?></small></td>
                     <td><?= $r->nama_kelas ?? '-' ?></td>
@@ -48,9 +47,10 @@
                     <td class="text-right">Rp <?= number_format($r->jumlah_bayar,0,',','.') ?></td>
                     <td><span class="badge badge-<?= $r->metode=='transfer'?'info':'secondary' ?>"><?= $r->metode=='transfer'?'Transfer':'Cash' ?></span></td>
                     <td><?= $r->petugas_nama ?? '-' ?></td>
+                    <td class="text-center"><a href="<?= base_url('admin/pembayaran/invoice/'.$r->id) ?>" class="btn btn-outline-primary btn-sm" target="_blank" title="Cetak Invoice"><i class="fas fa-print"></i></a></td>
                 </tr>
                 <?php endforeach; ?>
-                <?php if (empty($riwayat)): ?><tr><td colspan="9" class="text-center text-muted py-3">Belum ada riwayat pembayaran</td></tr><?php endif; ?>
+                <?php if (empty($riwayat)): ?><tr><td colspan="10" class="text-center text-muted py-3">Belum ada riwayat pembayaran</td></tr><?php endif; ?>
             </tbody>
         </table>
     </div>
